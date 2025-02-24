@@ -16,7 +16,7 @@ pub(crate) fn read_next_word(input: &String, mut index: usize) -> (String, usize
         }
         next_word.push(c);
     }
-    println!("{index}");
+
     (next_word, index)
 }
 

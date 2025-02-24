@@ -2,13 +2,9 @@ use crate::compiler::{self, StatementType};
 
 const UNEXPECTED_ERROR_MESSAGE: &str = "Unexpected Error Encountered";
 
-fn execute_select(table_name: &String) {
+fn execute_select(table_name: &String) {}
 
-}
-
-fn execute_insert(table_name: &String, row_to_insert: &Vec<String>) {
-
-}
+fn execute_insert(table_name: &String, row_to_insert: &Vec<String>) {}
 
 pub fn execute(statement: &compiler::Statement) -> () {
     match statement.statement_type() {
@@ -20,6 +16,7 @@ pub fn execute(statement: &compiler::Statement) -> () {
                 statement.row_to_insert().expect(UNEXPECTED_ERROR_MESSAGE);
             execute_insert(table_name, row_to_insert)
         }
+        StatementType::MetaExit => std::process::exit(0),
         StatementType::MetaHelp => todo!(),
         StatementType::MetaPrint => {
             let to_print: &String = statement.meta_args().expect("");

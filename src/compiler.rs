@@ -11,6 +11,7 @@ pub enum StatementType {
     Drop,
     Insert,
     Undefined,
+    MetaExit,
     MetaHelp,
     MetaPrint,
     Select,
@@ -100,7 +101,14 @@ fn compile_meta(input: &String) -> Statement {
     let (first_word, end_index) = read_next_word(input, 1);
     let meta_args = input[end_index..].to_string();
     match first_word.to_lowercase().as_str() {
-        "exit" => std::process::exit(0),
+        "exit" => Statement::new(
+            StatementResult::Success,
+            StatementType::MetaExit,
+            Some(meta_args),
+            None,
+            None,
+            None,
+        ),
         "help" => Statement::new(
             StatementResult::Success,
             StatementType::MetaHelp,
