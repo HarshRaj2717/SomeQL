@@ -6,7 +6,7 @@ fn execute_select(table_name: &String) {}
 
 fn execute_insert(table_name: &String, row_to_insert: &Vec<String>) {}
 
-pub fn execute(statement: &compiler::Statement) -> () {
+pub(crate) fn execute(statement: &compiler::Statement) -> () {
     match statement.statement_type() {
         StatementType::Create => todo!(),
         StatementType::Drop => todo!(),

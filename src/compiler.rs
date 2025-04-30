@@ -1,12 +1,12 @@
 use crate::utils::{read_next_list, read_next_word};
 
-pub enum StatementResult {
+pub(crate) enum StatementResult {
     Success,
     Unrecognized,
     ParseError,
 }
 
-pub enum StatementType {
+pub(crate) enum StatementType {
     Create,
     Drop,
     Insert,
@@ -18,7 +18,7 @@ pub enum StatementType {
 }
 
 /// Internal representation of input for forwarding to virtual machine
-pub struct Statement {
+pub(crate) struct Statement {
     statement_result: StatementResult,
     statement_type: StatementType,
     meta_args: Option<String>,              // for META commands only
@@ -46,27 +46,27 @@ impl Statement {
         }
     }
 
-    pub fn statement_result(&self) -> &StatementResult {
+    pub(crate) fn statement_result(&self) -> &StatementResult {
         &self.statement_result
     }
 
-    pub fn statement_type(&self) -> &StatementType {
+    pub(crate) fn statement_type(&self) -> &StatementType {
         &self.statement_type
     }
 
-    pub fn meta_args(&self) -> Option<&String> {
+    pub(crate) fn meta_args(&self) -> Option<&String> {
         self.meta_args.as_ref()
     }
 
-    pub fn table_name(&self) -> Option<&String> {
+    pub(crate) fn table_name(&self) -> Option<&String> {
         self.table_name.as_ref()
     }
 
-    // pub fn columns_to_create(&self) -> Option<&Vec<String>> {
+    // pub(crate) fn columns_to_create(&self) -> Option<&Vec<String>> {
     //     self.columns_to_create.as_ref()
     // }
 
-    pub fn row_to_insert(&self) -> Option<&Vec<String>> {
+    pub(crate) fn row_to_insert(&self) -> Option<&Vec<String>> {
         self.row_to_insert.as_ref()
     }
 }
@@ -212,7 +212,7 @@ fn compile_statement(input: &String) -> Statement {
 }
 
 /// Parse an input string and return its internal representation
-pub fn compile(input: &String) -> Statement {
+pub(crate) fn compile(input: &String) -> Statement {
     if let Some(first_char) = input.chars().next() {
         match first_char {
             '.' => compile_meta(input),

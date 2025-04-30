@@ -120,4 +120,3 @@ fn main() {
     start_repl();
     println!("Exiting SomeQL...");
 }
-
