@@ -26,7 +26,7 @@ impl InputBuffer {
         match std::io::Write::flush(&mut std::io::stdout()) {
             Ok(_) => {}
             Err(error) => {
-                println!("\nFailed to flush output : {error}");
+                eprintln!("\nFailed to flush output : {error}");
                 std::process::exit(1);
             }
         }
@@ -47,7 +47,7 @@ impl InputBuffer {
                     multi_line_input.push_str(&cur_input);
                 }
                 Err(error) => {
-                    println!("\nFailed to read input : {error}");
+                    eprintln!("\nFailed to read input : {error}");
                     std::process::exit(1);
                 }
             }
@@ -71,7 +71,7 @@ impl InputBuffer {
                 }
             }
             Err(error) => {
-                println!("\nFailed to read input : {error}");
+                eprintln!("\nFailed to read input : {error}");
                 std::process::exit(1);
             }
         }
@@ -79,7 +79,8 @@ impl InputBuffer {
     }
 }
 
-fn main() {
+/// Starts a REPL (Read-Eval-Print Loop) for the SomeQL database.
+fn start_repl() {
     let mut input_buffer = InputBuffer::new();
 
     loop {
@@ -96,17 +97,27 @@ fn main() {
             statement.statement_result(),
             compiler::StatementResult::Unrecognized
         ) {
-            eprintln!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
+            println!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
             continue;
         }
         if matches!(
             statement.statement_result(),
             compiler::StatementResult::ParseError
         ) {
-            eprintln!("\n~~~\nParsing/Syntax Error.\n~~~\n");
+            println!("\n~~~\nParsing/Syntax Error.\n~~~\n");
             continue;
         }
 
         virtual_machine::execute(&statement);
     }
 }
+
+fn main() {
+    println!("Welcome to SomeQL!");
+    println!("Type '.help' for help.");
+    println!("Type '.exit' to exit.");
+
+    start_repl();
+    println!("Exiting SomeQL...");
+}
+
