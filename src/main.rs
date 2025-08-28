@@ -1,6 +1,6 @@
 mod compiler;
-mod utils;
 mod virtual_machine;
+mod utils;
 
 struct InputBuffer {
     buffer: String,
@@ -94,21 +94,21 @@ fn start_repl() {
 
         let statement = compiler::compile(&cur_buffer);
         if matches!(
-            statement.statement_result(),
+            statement.get_statement_result(),
             compiler::StatementResult::Unrecognized
         ) {
             println!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
             continue;
         }
         if matches!(
-            statement.statement_result(),
+            statement.get_statement_result(),
             compiler::StatementResult::ParseError
         ) {
             println!("\n~~~\nParsing/Syntax Error.\n~~~\n");
             continue;
         }
 
-        virtual_machine::execute(&statement);
+        virtual_machine::virtual_machine::execute(&statement);
     }
 }
 

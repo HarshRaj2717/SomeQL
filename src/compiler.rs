@@ -46,19 +46,19 @@ impl Statement {
         }
     }
 
-    pub(crate) fn statement_result(&self) -> &StatementResult {
+    pub(crate) fn get_statement_result(&self) -> &StatementResult {
         &self.statement_result
     }
 
-    pub(crate) fn statement_type(&self) -> &StatementType {
+    pub(crate) fn get_statement_type(&self) -> &StatementType {
         &self.statement_type
     }
 
-    pub(crate) fn meta_args(&self) -> Option<&String> {
+    pub(crate) fn get_meta_args(&self) -> Option<&String> {
         self.meta_args.as_ref()
     }
 
-    pub(crate) fn table_name(&self) -> Option<&String> {
+    pub(crate) fn get_table_name(&self) -> Option<&String> {
         self.table_name.as_ref()
     }
 
@@ -66,7 +66,7 @@ impl Statement {
     //     self.columns_to_create.as_ref()
     // }
 
-    pub(crate) fn row_to_insert(&self) -> Option<&Vec<String>> {
+    pub(crate) fn get_row_to_insert(&self) -> Option<&Vec<String>> {
         self.row_to_insert.as_ref()
     }
 }
