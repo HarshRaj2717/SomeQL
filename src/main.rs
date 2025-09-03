@@ -1,6 +1,6 @@
 mod compiler;
 mod virtual_machine;
-mod utils;
+mod constants;
 
 struct InputBuffer {
     buffer: String,
@@ -19,9 +19,9 @@ impl InputBuffer {
 
     fn print_prompt(&self, multi_line: bool) {
         if multi_line {
-            print!("       > ");
+            print!("{}", constants::PROMPT_CONTINUE);
         } else {
-            print!("SomeQL> ");
+            print!("{}", constants::PROMPT_START);
         }
         match std::io::Write::flush(&mut std::io::stdout()) {
             Ok(_) => {}
@@ -92,19 +92,19 @@ fn start_repl() {
             continue;
         }
 
-        let statement = compiler::compile(&cur_buffer);
+        let statement = compiler::compiler::compile(&cur_buffer);
         if matches!(
             statement.get_statement_result(),
-            compiler::StatementResult::Unrecognized
+            compiler::compiler::StatementResult::Unrecognized
         ) {
-            println!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
+            eprintln!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
             continue;
         }
         if matches!(
             statement.get_statement_result(),
-            compiler::StatementResult::ParseError
+            compiler::compiler::StatementResult::ParseError
         ) {
-            println!("\n~~~\nParsing/Syntax Error.\n~~~\n");
+            eprintln!("\n~~~\nParsing/Syntax Error.\n~~~\n");
             continue;
         }
 

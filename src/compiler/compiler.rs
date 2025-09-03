@@ -1,11 +1,13 @@
-use crate::utils::{read_next_list, read_next_word};
+use crate::compiler::lib::{read_next_list, read_next_word};
 
+#[derive(Debug)]
 pub(crate) enum StatementResult {
     Success,
     Unrecognized,
     ParseError,
 }
 
+#[derive(Debug)]
 pub(crate) enum StatementType {
     Create,
     Drop,
@@ -18,6 +20,7 @@ pub(crate) enum StatementType {
 }
 
 /// Internal representation of input for forwarding to virtual machine
+#[derive(Debug)]
 pub(crate) struct Statement {
     statement_result: StatementResult,
     statement_type: StatementType,

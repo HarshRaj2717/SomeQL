@@ -1,8 +1,8 @@
-# Global \[_TODO_]
+# \[_TODO_] Global
 
 - Make it thread safe, add locks and stuff
-- Fix all build warnings
 - Improve error handling, maybe make a separate common/errors.rs to consist of all errors and how to show them to end-user at a single place
+- Implement indexing
 
 # main.rs
 
@@ -11,25 +11,45 @@
 # compiler.rs
 
 - compiles a text command into different internal code understandable Statement(s)
-- \[_TODO_] update the design to use enums properly to store data directly, instead of making the Statement struct, the space allocation can be improved if StatementType itself could store the data ... we will have to rename StatementType for the same though
+- \[_TODO_] update the design to use enums properly to store data directly, instead of making the Statement struct, the space allocation can be improved if StatementType itself could store the data ... we will have to rename StatementType for the same though ... move this to a common folder too
+- \[_TODO_ | **IMPORTANT**] Fix compiler to use proper lexing/grammar steps, include more complex commands, sub-queries, etc
 
-# virtual_machine/
+# \[_TODO_] virtual_machine/
 
 ## virtual_machine.rs
 
 - takes input from compiler.rs
 - handles the process of running a compiled Statement
-- ...need to decide more deeply here
-
-## database.rs
-
-- provides a database struct for managing data input/output
-- ...need to decide more deeply here
+- maintains a database object
 
 ## data_types.rs
 
 - consists of all the data types that a SomeQL db can have
 - also includes all the operations (eg: arithematic operations) that we can do on them
 
-> Further planning left regarding pager.rs, store_persistent.rs, cursor.rs, etc
-> Need to think deeper on how to represent the data and it's address internally, including how multiple tables will be represented too (and if to write my own hashing algo for getting data in O(1) time within a table)
+## database.rs
+
+- provides a database struct for managing data input/output
+- does type checking of queries
+- maintains a cursor object
+
+## cursor.rs
+
+- manages the exact location to write to
+- maintains a page_manager object
+
+## page_manager.rs
+
+- return the current page to write to
+- create new page into the table if needed
+- handles structure, offsets, etc of a page
+- controls how many rows will there be in a single page
+- each page consists of a way to point to the next page (this is to make it easier to move the cursor in case of multiple tables)
+- maintains a persistent_storage_manager object
+
+## persistent_storage_manager.rs
+
+- mmap layer
+- handle file locking mechanism
+- provide read-only mapping for isolation and also writable once
+- solve the proble of dirty reads/writes here
