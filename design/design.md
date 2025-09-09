@@ -14,9 +14,9 @@
 - \[_TODO_] update the design to use enums properly to store data directly, instead of making the Statement struct, the space allocation can be improved if StatementType itself could store the data ... we will have to rename StatementType for the same though ... move this to a common folder too
 - \[_TODO_ | **IMPORTANT**] Fix compiler to use proper lexing/grammar steps, include more complex commands, sub-queries, etc
 
-# \[_TODO_] virtual_machine/
+# \[_TODO_] executor/
 
-## virtual_machine.rs
+## executor.rs
 
 - takes input from compiler.rs
 - handles the process of running a compiled Statement
@@ -49,7 +49,7 @@
 
 ## persistent_storage_manager.rs
 
-- mmap layer
+- mmap layer, use map, map_copy, and map_mut as needed
 - handle file locking mechanism
 - provide read-only mapping for isolation and also writable once
 - solve the proble of dirty reads/writes here

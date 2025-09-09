@@ -1,38 +1,11 @@
-use crate::compiler::lib::{read_next_list, read_next_word};
+use super::lib::{read_next_list, read_next_word};
+use super::{Statement, StatementType};
 
-#[derive(Debug)]
-pub(crate) enum StatementResult {
-    Success,
-    Unrecognized,
-    ParseError,
-}
-
-#[derive(Debug)]
-pub(crate) enum StatementType {
-    Create,
-    Drop,
-    Insert,
-    Undefined,
-    MetaExit,
-    MetaHelp,
-    MetaPrint,
-    Select,
-}
-
-/// Internal representation of input for forwarding to virtual machine
-#[derive(Debug)]
-pub(crate) struct Statement {
-    statement_result: StatementResult,
-    statement_type: StatementType,
-    meta_args: Option<String>,              // for META commands only
-    table_name: Option<String>,             // for non-META commands only
-    columns_to_create: Option<Vec<String>>, // for create statement only
-    row_to_insert: Option<Vec<String>>,     // for insert statement only
-}
+use crate::common::Error;
 
 impl Statement {
     fn new(
-        statement_result: StatementResult,
+        error: Option<Error>,
         statement_type: StatementType,
         meta_args: Option<String>,
         table_name: Option<String>,
@@ -40,7 +13,7 @@ impl Statement {
         row_to_insert: Option<Vec<String>>,
     ) -> Self {
         Self {
-            statement_result,
+            error,
             statement_type,
             meta_args,
             table_name,
@@ -49,8 +22,8 @@ impl Statement {
         }
     }
 
-    pub(crate) fn get_statement_result(&self) -> &StatementResult {
-        &self.statement_result
+    pub(crate) fn get_error(&self) -> &Option<Error> {
+        &self.error
     }
 
     pub(crate) fn get_statement_type(&self) -> &StatementType {
@@ -76,9 +49,9 @@ impl Statement {
 
 /// return this when some command is unrecognized
 /// this is supposed to be treated as an error in future runtime
-fn unrecognized_command() -> Statement {
+pub(super) fn unrecognized_command() -> Statement {
     Statement::new(
-        StatementResult::Unrecognized,
+        Some(Error::CompilerUnrecognizedCommand),
         StatementType::Undefined,
         None,
         None,
@@ -91,7 +64,7 @@ fn unrecognized_command() -> Statement {
 /// this is supposed to be treated as an error in future runtime
 fn parse_error() -> Statement {
     Statement::new(
-        StatementResult::ParseError,
+        Some(Error::CompilerParseError),
         StatementType::Undefined,
         None,
         None,
@@ -100,12 +73,12 @@ fn parse_error() -> Statement {
     )
 }
 
-fn compile_meta(input: &String) -> Statement {
+pub(super) fn compile_meta(input: &String) -> Statement {
     let (first_word, end_index) = read_next_word(input, 1);
     let meta_args = input[end_index..].to_string();
     match first_word.to_lowercase().as_str() {
         "exit" => Statement::new(
-            StatementResult::Success,
+            None,
             StatementType::MetaExit,
             Some(meta_args),
             None,
@@ -113,7 +86,7 @@ fn compile_meta(input: &String) -> Statement {
             None,
         ),
         "help" => Statement::new(
-            StatementResult::Success,
+            None,
             StatementType::MetaHelp,
             Some(meta_args),
             None,
@@ -121,7 +94,7 @@ fn compile_meta(input: &String) -> Statement {
             None,
         ),
         "print" => Statement::new(
-            StatementResult::Success,
+            None,
             StatementType::MetaPrint,
             Some(meta_args),
             None,
@@ -132,7 +105,7 @@ fn compile_meta(input: &String) -> Statement {
     }
 }
 
-fn compile_statement(input: &String) -> Statement {
+pub(super) fn compile_statement(input: &String) -> Statement {
     let (first_word, mut end_index) = read_next_word(input, 0);
     let table_name;
     match first_word.to_lowercase().as_str() {
@@ -141,7 +114,7 @@ fn compile_statement(input: &String) -> Statement {
             let (success, columns_to_create, _) = read_next_list(input, end_index);
             match success {
                 true => Statement::new(
-                    StatementResult::Success,
+                    None,
                     StatementType::Create,
                     None,
                     Some(table_name),
@@ -156,7 +129,7 @@ fn compile_statement(input: &String) -> Statement {
             match table_name.trim() {
                 "" => parse_error(),
                 _ => Statement::new(
-                    StatementResult::Success,
+                    None,
                     StatementType::Drop,
                     None,
                     Some(table_name),
@@ -186,7 +159,7 @@ fn compile_statement(input: &String) -> Statement {
             let (success, row_to_insert, _) = read_next_list(input, end_index);
             match success {
                 true => Statement::new(
-                    StatementResult::Success,
+                    None,
                     StatementType::Insert,
                     None,
                     Some(table_name),
@@ -201,7 +174,7 @@ fn compile_statement(input: &String) -> Statement {
             match table_name.trim() {
                 "" => parse_error(),
                 _ => Statement::new(
-                    StatementResult::Success,
+                    None,
                     StatementType::Select,
                     None,
                     Some(table_name),
@@ -211,17 +184,5 @@ fn compile_statement(input: &String) -> Statement {
             }
         }
         _ => unrecognized_command(),
-    }
-}
-
-/// Parse an input string and return its internal representation
-pub(crate) fn compile(input: &String) -> Statement {
-    if let Some(first_char) = input.chars().next() {
-        match first_char {
-            '.' => compile_meta(input),
-            _ => compile_statement(input),
-        }
-    } else {
-        unrecognized_command()
     }
 }

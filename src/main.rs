@@ -1,6 +1,8 @@
+mod common;
 mod compiler;
-mod virtual_machine;
-mod constants;
+mod executor;
+
+use common::*;
 
 struct InputBuffer {
     buffer: String,
@@ -82,6 +84,7 @@ impl InputBuffer {
 /// Starts a REPL (Read-Eval-Print Loop) for the SomeQL database.
 fn start_repl() {
     let mut input_buffer = InputBuffer::new();
+    let executor = executor::Executor::new();
 
     loop {
         input_buffer.clear();
@@ -92,23 +95,18 @@ fn start_repl() {
             continue;
         }
 
-        let statement = compiler::compiler::compile(&cur_buffer);
-        if matches!(
-            statement.get_statement_result(),
-            compiler::compiler::StatementResult::Unrecognized
-        ) {
-            eprintln!("\n~~~\nUnrecognized command `{cur_buffer}` .\n~~~\n");
-            continue;
-        }
-        if matches!(
-            statement.get_statement_result(),
-            compiler::compiler::StatementResult::ParseError
-        ) {
-            eprintln!("\n~~~\nParsing/Syntax Error.\n~~~\n");
+        let statement = compiler::compile(&cur_buffer);
+
+        // Handle errors
+        if matches!(statement.get_error(), Some(_)) {
+            eprintln!(
+                "* Error: {}",
+                statement.get_error().as_ref().unwrap()
+            );
             continue;
         }
 
-        virtual_machine::virtual_machine::execute(&statement);
+        executor.execute(&statement);
     }
 }
 
