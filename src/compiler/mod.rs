@@ -8,10 +8,10 @@ use compiler::*;
 use crate::common::Error;
 
 pub(crate) enum StatementType {
-    Create,
-    Drop,
+    Create{table_name:String, columns:Vec<String>},
+    Drop{table_name:String},
     Insert,
-    Undefined,
+    Failed{error:Error},
     MetaExit,
     MetaHelp,
     MetaPrint,

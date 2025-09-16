@@ -52,7 +52,7 @@ impl Statement {
 pub(super) fn unrecognized_command() -> Statement {
     Statement::new(
         Some(Error::CompilerUnrecognizedCommand),
-        StatementType::Undefined,
+        StatementType::Failed,
         None,
         None,
         None,
@@ -65,7 +65,7 @@ pub(super) fn unrecognized_command() -> Statement {
 fn parse_error() -> Statement {
     Statement::new(
         Some(Error::CompilerParseError),
-        StatementType::Undefined,
+        StatementType::Failed,
         None,
         None,
         None,

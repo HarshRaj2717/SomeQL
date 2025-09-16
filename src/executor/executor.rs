@@ -39,7 +39,7 @@ impl Executor {
                     .unwrap_or_else(|| panic!("{}", Error::UnreachablePath));
                 self.execute_select(table_name)
             }
-            StatementType::Undefined => panic!("{}", Error::UnreachablePath),
+            StatementType::Failed => panic!("{}", Error::UnreachablePath),
         }
     }
 

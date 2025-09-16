@@ -1,6 +1,7 @@
 pub(crate) enum Error {
     CompilerParseError,
     CompilerUnrecognizedCommand,
+    InvalidDateTime,
     UnreachablePath,
     // ...more error types come here
 }
@@ -13,6 +14,7 @@ impl std::fmt::Display for Error {
             match self {
                 Error::CompilerParseError => "Parsing error during query compilation.",
                 Error::CompilerUnrecognizedCommand => "Unrecognized command encountered.",
+                Error::InvalidDateTime => "Invalid date/time provided.",
                 Error::UnreachablePath => "Unreachable path!! Seeing this error must be impossible.",
                 // ...more error types come here
             }

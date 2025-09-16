@@ -1,18 +1,38 @@
+> This file is mostly used as a design doc, TODO(s) denote what needs to be done while building this project, other unplanned issues can be found in the Issue tab on GitHub 
+
 # \[_TODO_] Global
 
 - Make it thread safe, add locks and stuff
 - Improve error handling, maybe make a separate common/errors.rs to consist of all errors and how to show them to end-user at a single place
-- Implement indexing
+- Implement indexing (via b-tree this should be fine automatically, dedpends on how you implement)
 
 # main.rs
 
 - just runs a REPL, compiles stuff and executes stuff
 
-# compiler.rs
+# common/
+
+## datatypes.rs
+
+- consists of all the data types that a SomeQL db can have
+- also includes all the operations (eg: arithematic operations) that we can do on them
+
+## constants.rs
+
+- just the constants, duh!!!
+
+## errors.rs
+
+- all errors in one place
+
+# compiler/
+
+## compiler.rs
 
 - compiles a text command into different internal code understandable Statement(s)
 - \[_TODO_] update the design to use enums properly to store data directly, instead of making the Statement struct, the space allocation can be improved if StatementType itself could store the data ... we will have to rename StatementType for the same though ... move this to a common folder too
 - \[_TODO_ | **IMPORTANT**] Fix compiler to use proper lexing/grammar steps, include more complex commands, sub-queries, etc
+- \[_TODO_] Need to update DROP command to accept WHERE clause
 
 # \[_TODO_] executor/
 
@@ -21,11 +41,6 @@
 - takes input from compiler.rs
 - handles the process of running a compiled Statement
 - maintains a database object
-
-## data_types.rs
-
-- consists of all the data types that a SomeQL db can have
-- also includes all the operations (eg: arithematic operations) that we can do on them
 
 ## database.rs
 
@@ -40,6 +55,7 @@
 
 ## page_manager.rs
 
+- fix the current page size to 4KB, will dynamically pick up system's page size later
 - return the current page to write to
 - create new page into the table if needed
 - handles structure, offsets, etc of a page
