@@ -1,4 +1,8 @@
-pub(crate) mod datatypes;
+mod datatypes;
+
+pub(crate) enum DataTypesDefiner  {
+    
+}
 
 pub(crate) enum DataTypes {
     // Integers

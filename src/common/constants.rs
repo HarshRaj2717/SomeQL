@@ -1,4 +1,4 @@
-pub const META_HELP_TEXT: &str = "META commands help:
+pub(crate) const META_HELP_TEXT: &str = "META commands help:
 
 .exit
     Exit this program
@@ -8,5 +8,5 @@ pub const META_HELP_TEXT: &str = "META commands help:
     Print literal STRING
 ";
 
-pub const PROMPT_START: &str = "SomeQL> ";
-pub const PROMPT_CONTINUE: &str = "      > ";
+pub(crate) const PROMPT_START: &str = "SomeQL> ";
+pub(crate) const PROMPT_CONTINUE: &str = "      > ";

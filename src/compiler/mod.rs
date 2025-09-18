@@ -4,28 +4,39 @@
 mod compiler;
 mod lib;
 
+use crate::common::{DataTypes, Error};
 use compiler::*;
-use crate::common::Error;
 
-pub(crate) enum StatementType {
-    Create{table_name:String, columns:Vec<String>},
-    Drop{table_name:String},
-    Insert,
-    Failed{error:Error},
+/// Internal representation of input for forwarding to executor
+pub(crate) enum Statement {
+    // SQL commands
+    Create {
+        table_name: String,
+        columns: Vec<DataTypes>,
+    },
+    Drop {
+        table_name: String,
+    },
+    Insert {
+        table_name: String,
+        row: Vec<DataTypes>,
+    },
+    Select {
+        table_name: String,
+        column_names: Option<Vec<String>>,
+    },
+
+    // Meta commands
     MetaExit,
     MetaHelp,
-    MetaPrint,
-    Select,
-}
+    MetaPrint {
+        text: String,
+    },
 
-/// Internal representation of input for forwarding to virtual machine
-pub(crate) struct Statement {
-    error: Option<Error>,
-    statement_type: StatementType,
-    meta_args: Option<String>,              // for META commands only
-    table_name: Option<String>,             // for non-META commands only
-    columns_to_create: Option<Vec<String>>, // for create statement only
-    row_to_insert: Option<Vec<String>>,     // for insert statement only
+    // Others
+    Failed {
+        error: Error,
+    },
 }
 
 /// Parse an input string and return its internal representation
