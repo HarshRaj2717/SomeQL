@@ -95,14 +95,11 @@ fn start_repl() {
             continue;
         }
 
-        let statement = compiler::compile(&cur_buffer);
+        let statement: compiler::Statement = compiler::compile(&cur_buffer);
 
         // Handle errors
-        if matches!(statement.get_error(), Some(_)) {
-            eprintln!(
-                "* Error: {}",
-                statement.get_error().as_ref().unwrap()
-            );
+        if let compiler::Statement::Failed { error } = statement {
+            eprintln!("* Error: {}", error);
             continue;
         }
 
