@@ -4,7 +4,7 @@
 mod compiler;
 mod lib;
 
-use crate::common::{DataTypes, Error};
+use crate::common::{DataTypeDefiners, DataTypeHolders, Error};
 use compiler::*;
 
 /// Internal representation of input for forwarding to executor
@@ -12,14 +12,14 @@ pub(crate) enum Statement {
     // SQL commands
     Create {
         table_name: String,
-        columns: Vec<DataTypes>,
+        columns: Vec<DataTypeDefiners>,
     },
     Drop {
         table_name: String,
     },
     Insert {
         table_name: String,
-        row: Vec<DataTypes>,
+        row: Vec<DataTypeHolders>,
     },
     Select {
         table_name: String,

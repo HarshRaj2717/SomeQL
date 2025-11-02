@@ -5,7 +5,6 @@
 - Make it thread safe, add locks and stuff
 - Improve error handling, maybe make a separate common/errors.rs to consist of all errors and how to show them to end-user at a single place
 - Implement indexing (via b-tree this should be fine automatically, dedpends on how you implement)\
-- Look into separating out app & core : https://www.youtube.com/watch?v=rUxZ5N77M5E
 
 # main.rs
 

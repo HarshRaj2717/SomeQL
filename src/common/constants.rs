@@ -10,3 +10,4 @@ pub(crate) const META_HELP_TEXT: &str = "META commands help:
 
 pub(crate) const PROMPT_START: &str = "SomeQL> ";
 pub(crate) const PROMPT_CONTINUE: &str = "      > ";
+pub(crate) const DATATYPE_DEFINERS_REGEX: &str = r"^([a-zA-Z]+)(\((\d+)\))?$";

@@ -9,7 +9,7 @@ impl Executor {
     }
 
     pub(crate) fn execute(&self, statement: &Statement) -> () {
-        match statement {
+        match &statement {
             &Statement::Create {
                 table_name,
                 columns,
@@ -33,5 +33,5 @@ impl Executor {
 
     fn execute_select(&self, table_name: &String, column_names: &Option<Vec<String>>) {}
 
-    fn execute_insert(&self, table_name: &String, row: &Vec<DataTypes>) {}
+    fn execute_insert(&self, table_name: &String, row: &Vec<DataTypeHolders>) {}
 }

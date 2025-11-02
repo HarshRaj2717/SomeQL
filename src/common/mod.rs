@@ -3,7 +3,8 @@
 pub(crate) mod constants;
 
 mod datatypes;
-pub(crate) use datatypes::DataTypes;
+pub(crate) use datatypes::DataTypeHolders;
+pub(crate) use datatypes::DataTypeDefiners;
 
 mod errors;
 pub(crate) use errors::Error;

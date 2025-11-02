@@ -1,10 +1,43 @@
-mod datatypes;
+//! Common datatypes used across the project
 
-pub(crate) enum DataTypesDefiner  {
-    
+mod datatype_definers;
+mod datatype_holders;
+
+/// Definitions for data types used in table creation
+/// 
+/// Add entry for each new datatype in both Definers and Holders.
+/// Also, update the `new` function in datatype_definers.rs
+pub(crate) enum DataTypeDefiners {
+    // Integers
+    TinyInt,
+    SmallInt,
+    Int,
+    BigInt,
+
+    // Unsigned Integers
+    UnsignedTinyInt,
+    UnsignedSmallInt,
+    UnsignedInt,
+    UnsignedBigInt,
+
+    // Floats
+    Float,
+    Double,
+
+    // Texts
+    Char { len: usize },
+    VarChar { len: usize },
+    Text,
+
+    // Others
+    Boolean,
+    Date,
+    DateTime,
+    Blob,
 }
 
-pub(crate) enum DataTypes {
+/// Holders for data types used in table rows
+pub(crate) enum DataTypeHolders {
     // Integers
     TinyInt { value: i8 },
     SmallInt { value: i16 },
@@ -30,4 +63,5 @@ pub(crate) enum DataTypes {
     Boolean { value: bool },
     Date { value: i64 },
     DateTime { value: i64 },
+    Blob { value: Vec<u8> },
 }

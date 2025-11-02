@@ -1,6 +1,7 @@
+use super::Statement;
 use super::lib::{read_next_list, read_next_word};
-use super::{Statement, StatementType};
 
+use crate::common::DataTypeDefiners;
 use crate::common::Error;
 
 /// return this when some command is unrecognized
@@ -56,7 +57,7 @@ pub(super) fn compile_statement(input: &String) -> Statement {
             match success {
                 true => Statement::Create {
                     table_name,
-                    columns,
+                    columns: DataTypeDefiners::new_from_list(&columns),
                 },
                 false => parse_error(),
             }
@@ -98,7 +99,7 @@ pub(super) fn compile_statement(input: &String) -> Statement {
                 "" => parse_error(),
                 _ => Statement::Select {
                     table_name,
-                    column_names,
+                    column_names: if success { Some(row) } else { None },
                 },
             }
         }
