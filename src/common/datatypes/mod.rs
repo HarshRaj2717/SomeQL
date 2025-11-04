@@ -7,7 +7,7 @@ mod datatype_holders;
 /// 
 /// Add entry for each new datatype in both Definers and Holders.
 /// Also, update the `new` function in datatype_definers.rs
-pub(crate) enum DataTypeDefiners {
+pub(crate) enum DataTypeDefiner {
     // Integers
     TinyInt,
     SmallInt,
@@ -37,7 +37,7 @@ pub(crate) enum DataTypeDefiners {
 }
 
 /// Holders for data types used in table rows
-pub(crate) enum DataTypeHolders {
+pub(crate) enum DataTypeHolder {
     // Integers
     TinyInt { value: i8 },
     SmallInt { value: i16 },
@@ -55,8 +55,8 @@ pub(crate) enum DataTypeHolders {
     Double { value: f64 },
 
     // Texts
-    Char { len: usize, value: String },
-    VarChar { len: usize, value: String },
+    Char { value: String },
+    VarChar { value: String },
     Text { value: String },
 
     // Others

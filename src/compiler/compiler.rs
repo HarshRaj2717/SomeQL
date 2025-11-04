@@ -1,25 +1,21 @@
 use super::Statement;
 use super::lib::{read_next_list, read_next_word};
 
-use crate::common::DataTypeDefiners;
-use crate::common::Error;
+use crate::common::QlError;
+use crate::common::{DataTypeDefiner, DataTypeHolder};
 
 /// return this when some command is unrecognized
 /// this is supposed to be treated as an error in future runtime
 #[inline]
-pub(super) fn unrecognized_command() -> Statement {
-    Statement::Failed {
-        error: Error::CompilerUnrecognizedCommand,
-    }
+pub(super) fn unrecognized_command() -> Result<Statement, QlError> {
+    Err(QlError::CompilerUnrecognizedCommand)
 }
 
 /// return this when some parsing error occurs
 /// this is supposed to be treated as an error in future runtime
 #[inline]
-fn parse_error() -> Statement {
-    Statement::Failed {
-        error: Error::CompilerParseError,
-    }
+fn parse_error() -> Result<Statement, QlError> {
+    Err(QlError::CompilerParseError)
 }
 
 #[inline]
@@ -32,19 +28,19 @@ fn validate_table_name(name: &String) -> bool {
     }
 }
 
-pub(super) fn compile_meta(input: &String) -> Statement {
+pub(super) fn compile_meta(input: &String) -> Result<Statement, QlError> {
     let (first_word, end_index) = read_next_word(input, 1);
     match first_word.to_lowercase().as_str() {
-        "exit" => Statement::MetaExit,
-        "help" => Statement::MetaHelp,
-        "print" => Statement::MetaPrint {
+        "exit" => Ok(Statement::MetaExit),
+        "help" => Ok(Statement::MetaHelp),
+        "print" => Ok(Statement::MetaPrint {
             text: input[end_index..].to_string(),
-        },
+        }),
         _ => unrecognized_command(),
     }
 }
 
-pub(super) fn compile_statement(input: &String) -> Statement {
+pub(super) fn compile_statement(input: &String) -> Result<Statement, QlError> {
     let (first_word, mut end_index) = read_next_word(input, 0);
     let table_name;
     match first_word.to_lowercase().as_str() {
@@ -55,10 +51,10 @@ pub(super) fn compile_statement(input: &String) -> Statement {
             }
             let (success, columns, _) = read_next_list(input, end_index);
             match success {
-                true => Statement::Create {
+                true => Ok(Statement::Create {
                     table_name,
-                    columns: DataTypeDefiners::new_from_list(&columns),
-                },
+                    columns: DataTypeDefiner::new_from_list(&columns)?,
+                }),
                 false => parse_error(),
             }
         }
@@ -66,7 +62,7 @@ pub(super) fn compile_statement(input: &String) -> Statement {
             (table_name, _) = read_next_word(input, end_index);
             match table_name.trim() {
                 "" => parse_error(),
-                _ => Statement::Drop { table_name },
+                _ => Ok(Statement::Drop { table_name }),
             }
         }
         "insert" => {
@@ -83,7 +79,16 @@ pub(super) fn compile_statement(input: &String) -> Statement {
 
             let (success, row, _) = read_next_list(input, end_index);
             match success {
-                true => Statement::Insert { table_name, row },
+                true => {
+                    let row_holders = DataTypeHolder::new_from_list(&row, &vec![]);
+                    match row_holders {
+                        Ok(holders) => Ok(Statement::Insert {
+                            table_name,
+                            row: holders,
+                        }),
+                        Err(_) => parse_error(),
+                    }
+                }
                 false => parse_error(),
             }
         }
@@ -97,10 +102,10 @@ pub(super) fn compile_statement(input: &String) -> Statement {
             let (success, row, _) = read_next_list(input, end_index);
             match table_name.trim() {
                 "" => parse_error(),
-                _ => Statement::Select {
+                _ => Ok(Statement::Select {
                     table_name,
                     column_names: if success { Some(row) } else { None },
-                },
+                }),
             }
         }
         _ => unrecognized_command(),

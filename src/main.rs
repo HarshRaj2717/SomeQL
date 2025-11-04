@@ -95,15 +95,17 @@ fn start_repl() {
             continue;
         }
 
-        let statement: compiler::Statement = compiler::compile(&cur_buffer);
+        let statement_res = compiler::compile(&cur_buffer);
 
         // Handle errors
-        if let compiler::Statement::Failed { error } = statement {
-            eprintln!("* Error: {}", error);
-            continue;
+        match &statement_res {
+            Ok(statement) => {
+                executor.execute(statement);
+            }
+            Err(error) => {
+                eprintln!("Error: {}", error);
+            }
         }
-
-        executor.execute(&statement);
     }
 }
 

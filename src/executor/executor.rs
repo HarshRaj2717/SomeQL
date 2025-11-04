@@ -27,11 +27,11 @@ impl Executor {
                 table_name,
                 column_names,
             } => self.execute_select(&table_name, &column_names),
-            _ => panic!("{}", Error::UnreachablePath),
+            _ => panic!("{}", QlError::UnreachablePath),
         }
     }
 
     fn execute_select(&self, table_name: &String, column_names: &Option<Vec<String>>) {}
 
-    fn execute_insert(&self, table_name: &String, row: &Vec<DataTypeHolders>) {}
+    fn execute_insert(&self, table_name: &String, row: &Vec<DataTypeHolder>) {}
 }

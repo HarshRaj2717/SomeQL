@@ -4,7 +4,7 @@
 mod compiler;
 mod lib;
 
-use crate::common::{DataTypeDefiners, DataTypeHolders, Error};
+use crate::common::{DataTypeDefiner, DataTypeHolder, QlError};
 use compiler::*;
 
 /// Internal representation of input for forwarding to executor
@@ -12,14 +12,14 @@ pub(crate) enum Statement {
     // SQL commands
     Create {
         table_name: String,
-        columns: Vec<DataTypeDefiners>,
+        columns: Vec<DataTypeDefiner>,
     },
     Drop {
         table_name: String,
     },
     Insert {
         table_name: String,
-        row: Vec<DataTypeHolders>,
+        row: Vec<DataTypeHolder>,
     },
     Select {
         table_name: String,
@@ -32,15 +32,10 @@ pub(crate) enum Statement {
     MetaPrint {
         text: String,
     },
-
-    // Others
-    Failed {
-        error: Error,
-    },
 }
 
 /// Parse an input string and return its internal representation
-pub(crate) fn compile(input: &String) -> Statement {
+pub(crate) fn compile(input: &String) -> Result<Statement, QlError> {
     if let Some(first_char) = input.chars().next() {
         match first_char {
             '.' => compile_meta(input),
